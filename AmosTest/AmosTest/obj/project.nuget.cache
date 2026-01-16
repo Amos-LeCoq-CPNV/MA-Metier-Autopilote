@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "LhvPX8Xhwkk=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\MAS\\Documents\\AmosTest\\AmosTest\\AmosTest.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\MAS\\.nuget\\packages\\simconnect.net\\0.1.18\\simconnect.net.0.1.18.nupkg.sha512"
+  ],
+  "logs": []
+}
