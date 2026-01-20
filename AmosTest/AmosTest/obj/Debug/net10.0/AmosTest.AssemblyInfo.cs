@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AmosTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b855318597683b5c8b980c39b4054b6b74b22c7")]
 [assembly: System.Reflection.AssemblyProductAttribute("AmosTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AmosTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
