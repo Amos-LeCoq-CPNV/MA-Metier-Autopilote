@@ -11,13 +11,14 @@ class Program
     {
         // Connexion MySQL
         string connectionString =
-            "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=root;";
+            "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=Pa$$w0rd;";
 
         // Chemin externe pour les données (AppData)
         string basePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
             "MA-Metier-Autopilote"
         );
+
 
         Directory.CreateDirectory(basePath);
 
