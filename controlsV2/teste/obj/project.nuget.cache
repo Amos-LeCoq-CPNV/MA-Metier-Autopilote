@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "g7Sh45ffr4c=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\pp45ljf\\Desktop\\MA-metier\\boite_a_outils\\controle\\controls\\controlsV2\\teste\\teste.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\pp45ljf\\.nuget\\packages\\simconnect.net\\0.1.18\\simconnect.net.0.1.18.nupkg.sha512"
+  ],
+  "logs": []
+}

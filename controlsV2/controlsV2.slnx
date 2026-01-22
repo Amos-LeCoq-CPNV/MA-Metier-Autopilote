@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="commandes/commandes.csproj" />
+  <Project Path="execution/execution.csproj" />
+  <Project Path="teste/teste.csproj" />
+  <Project Path="Testeinteractif/Testeinteractif.csproj" />
+</Solution>
