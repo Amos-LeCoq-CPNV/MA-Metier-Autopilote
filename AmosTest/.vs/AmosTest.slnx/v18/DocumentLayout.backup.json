@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Pr\u00EAt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\",
+  "WorkspaceRootPath": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{15A38716-168D-3E44-6A1E-9F871BB767A2}|AmosTest\\AmosTest.csproj|c:\\users\\pr\u00EAt\\source\\repos\\mas-metier-autopilote\\amostest\\amostest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{15A38716-168D-3E44-6A1E-9F871BB767A2}|AmosTest\\AmosTest.csproj|c:\\users\\mas\\documents\\ma-metier-autopilote\\amostest\\amostest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{15A38716-168D-3E44-6A1E-9F871BB767A2}|AmosTest\\AmosTest.csproj|solutionrelative:amostest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -32,11 +32,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Pr\u00EAt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\Program.cs",
               "RelativeDocumentMoniker": "AmosTest\\Program.cs",
-              "ToolTip": "C:\\Users\\Pr\u00EAt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\Program.cs",
+              "ToolTip": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\Program.cs",
               "RelativeToolTip": "AmosTest\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAsAAAAAAAAAA==",
+              "ViewState": "AgIAACQAAAAAAAAAAAAcwDYAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-19T10:51:11.11Z",
               "EditorCaption": ""

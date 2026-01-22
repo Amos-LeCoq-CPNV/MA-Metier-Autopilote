@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pp45ljf\\Desktop\\MA-metier\\boite_a_outils\\controle\\controls\\controlsV2\\commandes\\commandes.csproj": {}
+    "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\controlsV2\\commandes\\commandes.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pp45ljf\\Desktop\\MA-metier\\boite_a_outils\\controle\\controls\\controlsV2\\commandes\\commandes.csproj": {
+    "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\controlsV2\\commandes\\commandes.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pp45ljf\\Desktop\\MA-metier\\boite_a_outils\\controle\\controls\\controlsV2\\commandes\\commandes.csproj",
+        "projectUniqueName": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\controlsV2\\commandes\\commandes.csproj",
         "projectName": "commandes",
-        "projectPath": "C:\\Users\\pp45ljf\\Desktop\\MA-metier\\boite_a_outils\\controle\\controls\\controlsV2\\commandes\\commandes.csproj",
-        "packagesPath": "C:\\Users\\pp45ljf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pp45ljf\\Desktop\\MA-metier\\boite_a_outils\\controle\\controls\\controlsV2\\commandes\\obj\\",
+        "projectPath": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\controlsV2\\commandes\\commandes.csproj",
+        "packagesPath": "C:\\Users\\MAS\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\controlsV2\\commandes\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\pp45ljf\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\MAS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,6 +46,10 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[9.6.0, )"
+            },
             "SimConnect.NET": {
               "target": "Package",
               "version": "[0.1.18, )"

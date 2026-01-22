@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Prêt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj": {}
+    "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Prêt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj": {
+    "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Prêt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj",
+        "projectUniqueName": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj",
         "projectName": "AmosTest",
-        "projectPath": "C:\\Users\\Prêt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj",
-        "packagesPath": "C:\\Users\\Prêt\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Prêt\\source\\repos\\MAS-Metier-Autopilote\\AmosTest\\AmosTest\\obj\\",
+        "projectPath": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\AmosTest.csproj",
+        "packagesPath": "C:\\Users\\MAS\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MAS\\Documents\\MA-Metier-Autopilote\\AmosTest\\AmosTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Prêt\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\MAS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

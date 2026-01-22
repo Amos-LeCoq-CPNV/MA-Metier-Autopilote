@@ -10,3 +10,16 @@ C:\Users\pp45ljf\Desktop\MA-metier\boite_a_outils\controle\controls\controlsV2\c
 C:\Users\pp45ljf\Desktop\MA-metier\boite_a_outils\controle\controls\controlsV2\commandes\obj\Debug\net10.0\refint\commandes.dll
 C:\Users\pp45ljf\Desktop\MA-metier\boite_a_outils\controle\controls\controlsV2\commandes\obj\Debug\net10.0\commandes.pdb
 C:\Users\pp45ljf\Desktop\MA-metier\boite_a_outils\controle\controls\controlsV2\commandes\obj\Debug\net10.0\ref\commandes.dll
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\bin\Debug\net10.0\commandes.deps.json
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\bin\Debug\net10.0\commandes.dll
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\bin\Debug\net10.0\commandes.pdb
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.csproj.AssemblyReference.cache
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.AssemblyInfoInputs.cache
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.AssemblyInfo.cs
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.csproj.CoreCompileInputs.cache
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.sourcelink.json
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.dll
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\refint\commandes.dll
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\commandes.pdb
+C:\Users\MAS\Documents\MA-Metier-Autopilote\controlsV2\commandes\obj\Debug\net10.0\ref\commandes.dll

@@ -2,87 +2,117 @@
 using controls.Wrapper;      // SimConnectControls
 using SimConnect.NET;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MySql.Data.MySqlClient;
 
 class Program
 {
-    static async Task Main()
+    static async Task Main() { await connect(); }
+    static async Task connect()
     {
-        Console.WriteLine("=== Test interactif de la boîte à outils Controls ===");
+        // Connexion MySQL
+        string connectionString =
+            "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=Pa$$w0rd;";
 
-        Console.WriteLine("Assurez-vous que MSFS est lancé et chargé...");
-        await Task.Delay(5000);
+        // Chemin du CSV (idéalement externe au projet)
+        string csvPath = "FlightData.csv";
 
-        // Création et connexion au client SimConnect
-        var client = new SimConnectClient("Test Controls");
+        using var sqlConnection = new MySqlConnection(connectionString);
+        sqlConnection.Open();
+        Console.WriteLine("Connexion MySQL réussie");
 
-        try
+        // Connexion SimConnect
+        var client = new SimConnectClient();
+        await client.ConnectAsync();
+        Console.WriteLine("Connexion à Flight Simulator réussie");
+
+        bool running = true;
+        Console.WriteLine("Appuie sur Q pour arrêter l’enregistrement");
+
+        using var writer = new StreamWriter(csvPath);
+        writer.WriteLine("Timestamp;Altitude_ft;Airspeed_kts;AccelX;AccelY;AccelZ");
+
+        while (running)
         {
-            await client.ConnectAsync();
-            Console.WriteLine("Connexion SimConnect OK");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erreur de connexion SimConnect : {ex.Message}");
-            return;
+            // Arrêt avec Q
+            if (Console.KeyAvailable)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Q)
+                    running = false;
+            }
+
+            // Récupération des données
+            double altitude = await client.SimVars.GetAsync<double>("PLANE ALTITUDE", "feet");
+            double airspeed = await client.SimVars.GetAsync<double>("AIRSPEED INDICATED", "knots");
+
+            double magnetic_compas = await client.SimVars.GetAsync<double>("MAGNETIC COMPASS", "degrees");
+            double roulis = await client.SimVars.GetAsync<double>("PLANE BANK DEGREES", "radians");
+
+            double ax = await client.SimVars.GetAsync<double>("ACCELERATION BODY X", "feet per second squared");
+            double ay = await client.SimVars.GetAsync<double>("ACCELERATION BODY Y", "feet per second squared");
+            double az = await client.SimVars.GetAsync<double>("ACCELERATION BODY Z", "feet per second squared");
+            await analyse(client, altitude, airspeed, magnetic_compas, roulis);
+
+            DateTime timestamp = DateTime.Now;
+
+            // Écriture CSV (InvariantCulture = point comme séparateur décimal)
+            writer.WriteLine(
+                $"{timestamp:HH:mm:ss.fff};" +
+                $"{altitude.ToString("F0", CultureInfo.InvariantCulture)};" +
+                $"{airspeed.ToString("F0", CultureInfo.InvariantCulture)};" +
+                $"{ax.ToString("F3", CultureInfo.InvariantCulture)};" +
+                $"{ay.ToString("F3", CultureInfo.InvariantCulture)};" +
+                $"{az.ToString("F3", CultureInfo.InvariantCulture)}"
+            );
+            writer.Flush();
+
+            // Insertion SQL
+            string query = @"
+                INSERT INTO Data
+                (`Timestamp`, `Altitude_ft`, `Airspeed_kts`, `AccelX_ft_s2`, `AccelY_ft_s2`, `AccelZ_ft_s2`)
+                VALUES (@ts, @alt, @spd, @ax, @ay, @az)";
+
+            using (var cmd = new MySqlCommand(query, sqlConnection))
+            {
+                cmd.Parameters.AddWithValue("@ts", timestamp);
+                cmd.Parameters.AddWithValue("@alt", (int)altitude);
+                cmd.Parameters.AddWithValue("@spd", (int)airspeed);
+                cmd.Parameters.AddWithValue("@ax", ax);
+                cmd.Parameters.AddWithValue("@ay", ay);
+                cmd.Parameters.AddWithValue("@az", az);
+
+                cmd.ExecuteNonQuery();
+            }
+
+            await Task.Delay(100);
         }
 
+        Console.WriteLine("Enregistrement arrêté.");
+    }
+
+    public static async Task analyse(SimConnectClient client, double alt, double vitesse, double boussole, double angleRoulis)
+    {
+        await Task.Delay(100);
         // Instanciation de la toolbox
         Icommandes controls = new SimConnectControls(client);
 
-        bool quitter = false;
-
-        while (!quitter)
+        Console.WriteLine(alt.ToString()+" "+vitesse.ToString()+" "+boussole.ToString()+" "+angleRoulis.ToString());
+        if (angleRoulis>0.1)
         {
-            Console.WriteLine("\n--- Menu de test ---");
-            Console.WriteLine("1 - Throttle à 75%");
-            Console.WriteLine("2 - Aileron à 0.3");
-            Console.WriteLine("3 - Elevator à -0.2");
-            Console.WriteLine("4 - Rudder à 0.5");
-            Console.WriteLine("5 - Flaps à 2");
-            Console.WriteLine("6 - Autopilot Heading à 180°");
-            Console.WriteLine("Q - Quitter");
-            Console.Write("Choix : ");
-
-            string choix = Console.ReadLine()?.Trim().ToUpper();
-
-            try
-            {
-                switch (choix)
-                {
-                    case "1":
-                        await controls.SetAileron(0.3);
-                        Console.WriteLine("Aileron envoyé !");
-                        break;
-                    case "2":
-                        await controls.SetElevator(-0.2);
-                        Console.WriteLine("Elevator envoyé !");
-                        break;
-                    case "3":
-                        await controls.SetRudder(0.5);
-                        Console.WriteLine("Rudder envoyé !");
-                        break;
-                    case "4":
-                        await controls.SetAutopilotHeading(180);
-                        Console.WriteLine("Autopilot Heading envoyé !");
-                        break;
-                    case "Q":
-                        quitter = true;
-                        break;
-                    default:
-                        Console.WriteLine("Choix invalide !");
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Erreur lors de l'exécution : {ex.Message}");
-            }
+            await controls.SetAileron(0.2);
+        }
+        if (angleRoulis < -0.1)
+        {
+            await controls.SetAileron(-0.2);
+        }
+        if ((angleRoulis < 0.1) && (angleRoulis > -0.1))
+        {
+            await controls.SetAileron(0);
         }
 
-        // Déconnexion propre
-        await client.DisconnectAsync();
-        Console.WriteLine("Déconnexion SimConnect OK");
     }
 }
+//await controls.SetAutopilotHeading(180);
