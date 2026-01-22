@@ -13,8 +13,15 @@ class Program
         string connectionString =
             "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=root;";
 
-        // Chemin du CSV (idéalement externe au projet)
-        string csvPath = "FlightData.csv";
+        // Chemin externe pour les données (AppData)
+        string basePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "MA-Metier-Autopilote"
+        );
+
+        Directory.CreateDirectory(basePath);
+
+        string csvPath = Path.Combine(basePath, "FlightData.csv");
 
         using var sqlConnection = new MySqlConnection(connectionString);
         sqlConnection.Open();
@@ -84,5 +91,6 @@ class Program
         }
 
         Console.WriteLine("Enregistrement arrêté.");
+        Console.WriteLine($"Fichier CSV enregistré dans : {csvPath}");
     }
 }
