@@ -10,6 +10,7 @@ using MySql.Data.MySqlClient;
 class Program
 {
     static async Task Main() { await connect(); }
+
     static async Task connect()
     {
         // Connexion MySQL
@@ -34,6 +35,9 @@ class Program
         using var writer = new StreamWriter(csvPath);
         writer.WriteLine("Timestamp;Altitude_ft;Airspeed_kts;AccelX;AccelY;AccelZ");
 
+        bool bousoleInfo= true;
+        double bousole_start = 0;
+
         while (running)
         {
             // Arrêt avec Q
@@ -43,6 +47,7 @@ class Program
                 if (key.Key == ConsoleKey.Q)
                     running = false;
             }
+
 
             // Récupération des données
             double altitude = await client.SimVars.GetAsync<double>("PLANE ALTITUDE", "feet");
@@ -54,7 +59,14 @@ class Program
             double ax = await client.SimVars.GetAsync<double>("ACCELERATION BODY X", "feet per second squared");
             double ay = await client.SimVars.GetAsync<double>("ACCELERATION BODY Y", "feet per second squared");
             double az = await client.SimVars.GetAsync<double>("ACCELERATION BODY Z", "feet per second squared");
-            await analyse(client, altitude, airspeed, magnetic_compas, roulis);
+
+            if (bousoleInfo == true)
+            {
+                bousole_start = magnetic_compas;
+                bousoleInfo= false;
+            }
+            
+            await analyse(client, altitude, airspeed, magnetic_compas, roulis, bousole_start);
 
             DateTime timestamp = DateTime.Now;
 
@@ -93,26 +105,55 @@ class Program
         Console.WriteLine("Enregistrement arrêté.");
     }
 
-    public static async Task analyse(SimConnectClient client, double alt, double vitesse, double boussole, double angleRoulis)
+    public static async Task analyse(SimConnectClient client, double alt, double vitesse, double boussole, double angleRoulis,double boussole_start)
     {
         await Task.Delay(100);
         // Instanciation de la toolbox
         Icommandes controls = new SimConnectControls(client);
+        Console.WriteLine(alt.ToString()+" "+vitesse.ToString()+" "+angleRoulis.ToString());
 
-        Console.WriteLine(alt.ToString()+" "+vitesse.ToString()+" "+boussole.ToString()+" "+angleRoulis.ToString());
-        if (angleRoulis>0.1)
+        double angle_max = 0.01;
+        if (angleRoulis>angle_max)
         {
-            await controls.SetAileron(0.2);
+            await controls.SetAileron(0.05);
         }
-        if (angleRoulis < -0.1)
+        if (angleRoulis < -angle_max)
         {
-            await controls.SetAileron(-0.2);
+            await controls.SetAileron(-0.05);
         }
-        if ((angleRoulis < 0.1) && (angleRoulis > -0.1))
+        if ((angleRoulis < angle_max) && (angleRoulis > -angle_max))
         {
             await controls.SetAileron(0);
         }
 
+        /*
+        if (vitesse> N)
+            {
+                await controls.SetElevator(0.2);
+            }
+            if (vitesse< N - 2)
+            {
+                await controls.SetElevator(-0.2);
+            }
+            if (vitesse==0)
+            {
+                await controls.SetElevator(0);
+            }
+        */
+        Console.Write(boussole_start + " " + boussole+"\n");
+        
+        if (boussole > boussole_start+2)
+        {
+            await controls.SetRudder(-0.05);
+        }
+        if (boussole < boussole_start - 2)
+        {
+            await controls.SetRudder(0.05);
+        }
+        if ((boussole < boussole_start+2) && (boussole > boussole_start - 2))
+        {
+            await controls.SetRudder(0);
+        }
     }
 }
 //await controls.SetAutopilotHeading(180);
