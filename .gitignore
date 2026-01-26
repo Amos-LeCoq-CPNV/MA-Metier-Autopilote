@@ -268,3 +268,20 @@ history/
 *.msp
 # JetBrains Rider
 *.sln.iml
+# Fichiers interne
+commandes/obj/
+*.cs
+*.cache
+*.txt
+*.pdb
+*.targets
+*.props
+*.json
+commandes/obj/*
+*.cs
+*.cache
+*.txt
+*.pdb
+*.targets
+*.props
+*.json
