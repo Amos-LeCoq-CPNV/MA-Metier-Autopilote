@@ -266,3 +266,9 @@ history/
 *.msp
 # JetBrains Rider
 *.sln.iml
+# Fichiers interne
+recuperationV2/obj/Debug/
+*.cs
+*.cache
+*.txt
+*.pdb
