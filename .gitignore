@@ -267,8 +267,11 @@ history/
 # JetBrains Rider
 *.sln.iml
 # Fichiers interne
-recuperationV2/obj/Debug/
+commandes/obj/*
 *.cs
 *.cache
 *.txt
 *.pdb
+*.targets
+*.props
+*.json
