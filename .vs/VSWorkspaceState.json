@@ -1,13 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\AmosTest",
-    "\\AmosTest\\AmosTest",
-    "\\AmosTest\\AmosTest\\bin",
-    "\\AmosTest\\AmosTest\\bin\\Debug",
-    "\\AmosTest\\AmosTest\\bin\\Release",
-    "\\AmosTest\\AmosTest\\obj"
+    ""
   ],
-  "SelectedNode": "\\AmosTest\\AmosTest\\Program.cs",
+  "SelectedNode": "\\controlsV2.slnx",
   "PreviewInSolutionExplorer": false
 }

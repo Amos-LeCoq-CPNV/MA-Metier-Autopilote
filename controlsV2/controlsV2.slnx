@@ -1,6 +1,4 @@
 <Solution>
+  <Project Path="autopilote/autopilote.csproj" Id="396d84e4-69ec-4e54-9775-b9bb14105635" />
   <Project Path="commandes/commandes.csproj" />
-  <Project Path="execution/execution.csproj" />
-  <Project Path="teste/teste.csproj" />
-  <Project Path="Testeinteractif/Testeinteractif.csproj" />
 </Solution>

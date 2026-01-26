@@ -5,7 +5,7 @@ using System.IO;
 using System.Globalization;
 using System.Threading.Tasks;
 
-namespace controls.Wrapper
+namespace commandes
 {
     public class SimConnectControls : Icommandes
     {
