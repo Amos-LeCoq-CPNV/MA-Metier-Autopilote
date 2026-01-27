@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="autopilote/autopilote.csproj" Id="396d84e4-69ec-4e54-9775-b9bb14105635" />
   <Project Path="commandes/commandes.csproj" />
+  <Project Path="ia/ia.csproj" Id="3934da7f-c05b-497f-b313-1f7ab6c47e9d" />
 </Solution>
