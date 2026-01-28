@@ -1,8 +1,9 @@
-﻿using commandes.Interfaces;
+﻿using autopilote;
 using commandes;
+using commandes.Interfaces;
+using MySql.Data.MySqlClient;
 using SimConnect.NET;
 using System.Globalization;
-using MySql.Data.MySqlClient;
 
 class Program
 {
@@ -14,7 +15,7 @@ class Program
     static bool doCircle = false;
 
     // Indique si on s'est déjà éloigné du cap de départ
-    static bool leftStartHeading = false;
+    
 
     static async Task connect()
     {
@@ -122,82 +123,11 @@ class Program
         // Si on fait un cercle
         if (doCircle)
         {
-            await CircleLeft(controls, boussole, boussole_start);
-            return;
+            doCircle=await Drive.CircleLeft(controls, boussole, boussole_start);
         }
 
-        // Vol en ligne droite
-        double angle_max = 0.01;
-        double angle = 0.05;
-
-        if (angleRoulis > angle_max)
-            await controls.SetAileron(angle);
-
-        if (angleRoulis < -angle_max)
-            await controls.SetAileron(-angle);
-
-        if (Math.Abs(angleRoulis) <= angle_max)
-            await controls.SetAileron(0);
-
-        // Boussole
+        await Drive.vol_Plat(controls, angleRoulis);
+        await Drive.cap(controls, angleRoulis);
         Console.Write(boussole_start + " " + boussole + " " + angleRoulis + "\n");
-        double boussole_erreur = NormalizeAngle(boussole - boussole_start);
-        double boussole_tolerance = 2;
-
-        // trop à droite
-        if (boussole_erreur > boussole_tolerance)
-        {
-            await controls.SetRudder(-angle);
-        }
-
-        // trop à gauche
-        if (boussole_erreur < -boussole_tolerance)
-        {
-            await controls.SetRudder(angle);
-        }
-
-        // ok
-        if (Math.Abs(boussole_erreur) <= boussole_tolerance)
-        {
-            await controls.SetRudder(0);
-        }
-    }
-
-    // Cercle complet (gauche)
-    static async Task CircleLeft(Icommandes controls, double boussole, double boussole_start)
-    {
-        double angle = 0.05;
-
-        // Initialisation du cercle
-
-        // Virage constant
-        await controls.SetAileron(-angle);
-        await controls.SetRudder(-angle);
-
-        double diff = NormalizeAngle(boussole - boussole_start);
-
-        // Si la valeur absolue est plus grande que 20°, on a quitté le cap de départ
-        if (Math.Abs(diff) > 20)
-            leftStartHeading = true;
-
-        // Si on a quitté le cap de départ et qu'on y est revenu, on arrête le cercle (on revient en vol en ligne droite)
-        if (leftStartHeading && Math.Abs(diff) < 2)
-        {
-            await controls.SetAileron(0);
-            await controls.SetRudder(0);
-
-            doCircle = false;
-
-            Console.WriteLine("Cercle gauche terminé");
-        }
-    }
-
-    // Outil angles
-    static double NormalizeAngle(double angle)
-    {
-        angle %= 360;
-        if (angle < -180) angle += 360;
-        if (angle > 180) angle -= 360;
-        return angle;
     }
 }
