@@ -1,13 +1,13 @@
-Boîte à outils pour les commandes de pilotage sur Fly Simulator.
+BoÃ®te Ã  outils pour les commandes de pilotage sur Fly Simulator.
 Version 1.0.0
 
-Comment intégrer les commandes :
-Ajouter la librérie à la solution.
-Ajouter la librérie aux références du projet executable.
+Comment intÃ©grer les commandes :
+Ajouter la librÃ©rie Ã  la solution.
+Ajouter la librÃ©rie aux rÃ©fÃ©rences du projet executable.
 Dans le program.cs ajouter :
 	using commandes.Interfaces;
 	using controls.Wrapper;
-Intégrer le package SimConnect.
+IntÃ©grer le package SimConnect.
 
 Instancier les commandes :
 	Icommandes controls = new SimConnectControls(client);
@@ -23,16 +23,11 @@ Changer le rudder :
 Changer l'autopilotheading :
 	await controls.SetAutopilotHeading("valeur");
 
-Les valeurs peuvent être négatives ou positives suivant le sens de mouvement désiré.
+Les valeurs peuvent Ãªtre nÃ©gatives ou positives suivant le sens de mouvement dÃ©sirÃ©.
 
 
-Fonctionnement :
 
-Le programme executable utilise le registre de fonctions présent dans Icommande.cs, ces fonctions sont construites dans commande.cs.
-
-Une commandes est donc créée => référée pour être disponible => utilisable dans un executable.
+Il est bien sÃ»r important de connecter le programme executable au simulateur comme tout projet utilisant SimConnect.
 
 
-Il est bien sûr important de connecter le programme executable au simulateur comme tout projet utilisant SimConnect.
-
-Le simulateur doit déjà être lancé à l'execution du programme sinon quoi le programme rencontrera une erreur.
+Le simulateur doit dÃ©jÃ  Ãªtre lancÃ© Ã  l'execution du programme sinon quoi le programme rencontrera une erreur.
