@@ -13,21 +13,16 @@ class Program
     // Indique si on est en train de faire un cercle
     static bool doCircle = false;
 
-    // Stocke le cap au début du cercle
-    static double circleStartHeading = 0;
-
     // Indique si on s'est déjà éloigné du cap de départ
     static bool leftStartHeading = false;
 
     static async Task connect()
     {
         // Connexion MySQL
-        string connectionString =
-            "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=Pa$$w0rd;";
+        string connectionString = "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=Pa$$w0rd;";
 
         // Enregistrement CSV
-        string basePath =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "MA-Metier-Autopilote");
+        string basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "MA-Metier-Autopilote");
 
         Directory.CreateDirectory(basePath);
         string csvPath = Path.Combine(basePath, "FlightData.csv");
@@ -120,26 +115,18 @@ class Program
     }
 
     // Analyse / pilotage
-
-    public static async Task analyse(
-        SimConnectClient client,
-        double alt,
-        double vitesse,
-        double boussole,
-        double angleRoulis,
-        double boussole_start)
+    public static async Task analyse(SimConnectClient client,double alt,double vitesse,double boussole,double angleRoulis,double boussole_start)
     {
         Icommandes controls = new SimConnectControls(client);
 
         // Si on fait un cercle
         if (doCircle)
         {
-            await CircleLeft(controls, boussole);
+            await CircleLeft(controls, boussole, boussole_start);
             return;
         }
 
         // Vol en ligne droite
-
         double angle_max = 0.01;
         double angle = 0.05;
 
@@ -152,41 +139,46 @@ class Program
         if (Math.Abs(angleRoulis) <= angle_max)
             await controls.SetAileron(0);
 
-        if (boussole > boussole_start + 2)
+        // Boussole
+        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + "\n");
+        double boussole_erreur = NormalizeAngle(boussole - boussole_start);
+        double boussole_tolerance = 2;
+
+        // trop à droite
+        if (boussole_erreur > boussole_tolerance)
+        {
             await controls.SetRudder(-angle);
+        }
 
-        if (boussole < boussole_start - 2)
+        // trop à gauche
+        if (boussole_erreur < -boussole_tolerance)
+        {
             await controls.SetRudder(angle);
+        }
 
-        if (Math.Abs(boussole - boussole_start) <= 2)
+        // ok
+        if (Math.Abs(boussole_erreur) <= boussole_tolerance)
+        {
             await controls.SetRudder(0);
+        }
     }
 
-
     // Cercle complet (gauche)
-
-    static async Task CircleLeft(Icommandes controls, double currentHeading)
+    static async Task CircleLeft(Icommandes controls, double boussole, double boussole_start)
     {
         double angle = 0.05;
 
         // Initialisation du cercle
-        if (circleStartHeading == 0)
-        {
-            circleStartHeading = currentHeading;
-            leftStartHeading = false;
-            Console.WriteLine("Début cercle gauche");
-        }
 
         // Virage constant
         await controls.SetAileron(-angle);
         await controls.SetRudder(-angle);
 
-        double diff = NormalizeAngle(currentHeading - circleStartHeading);
+        double diff = NormalizeAngle(boussole - boussole_start);
 
         // Si la valeur absolue est plus grande que 20°, on a quitté le cap de départ
         if (Math.Abs(diff) > 20)
             leftStartHeading = true;
-
 
         // Si on a quitté le cap de départ et qu'on y est revenu, on arrête le cercle (on revient en vol en ligne droite)
         if (leftStartHeading && Math.Abs(diff) < 2)
@@ -195,15 +187,12 @@ class Program
             await controls.SetRudder(0);
 
             doCircle = false;
-            circleStartHeading = 0;
 
             Console.WriteLine("Cercle gauche terminé");
         }
     }
 
-
     // Outil angles
-
     static double NormalizeAngle(double angle)
     {
         angle %= 360;
