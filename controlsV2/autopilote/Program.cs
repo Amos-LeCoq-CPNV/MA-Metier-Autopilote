@@ -120,14 +120,16 @@ class Program
     {
         Icommandes controls = new SimConnectControls(client);
 
+        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + "\n");
+
         // Si on fait un cercle
         if (doCircle)
         {
             doCircle=await Drive.CircleLeft(controls, boussole, boussole_start);
+            return;
         }
 
         await Drive.vol_Plat(controls, angleRoulis);
         await Drive.cap(controls, angleRoulis);
-        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + "\n");
     }
 }
