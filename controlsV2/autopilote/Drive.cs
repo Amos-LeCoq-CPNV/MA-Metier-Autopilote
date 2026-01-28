@@ -53,18 +53,21 @@ namespace autopilote
             // Virage constant
             await controls.SetAileron(-angle);
             await controls.SetRudder(-angle);
+            
+            await controls.SetElevator(0.02);
 
             double diff = NormalizeAngle(boussole - boussole_start);
 
             // Si la valeur absolue est plus grande que 20°, on a quitté le cap de départ
-            if (Math.Abs(diff) > 20)
+            if (Math.Abs(diff) > 80)
                 leftStartHeading = true;
-
             // Si on a quitté le cap de départ et qu'on y est revenu, on arrête le cercle (on revient en vol en ligne droite)
-            if (leftStartHeading && Math.Abs(diff) < 2)
+            if (leftStartHeading && Math.Abs(diff) < 80)
             {
                 await controls.SetAileron(0);
                 await controls.SetRudder(0);
+                await controls.SetElevator(0);
+                leftStartHeading = false;
                 Console.WriteLine("Cercle gauche terminé");
                 return false;
             }
