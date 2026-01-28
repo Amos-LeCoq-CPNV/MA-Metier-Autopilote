@@ -1,4 +1,4 @@
-﻿using commandes.Interfaces;// Icommandes
+﻿using commandes.Interfaces;
 using commandes;
 using SimConnect.NET;
 using System.Globalization;
@@ -8,13 +8,24 @@ class Program
 {
     static async Task Main() { await connect(); }
 
+    // Variables d'état
+
+    // Indique si on est en train de faire un cercle
+    static bool doCircle = false;
+
+    // Stocke le cap au début du cercle
+    static double circleStartHeading = 0;
+
+    // Indique si on s'est déjà éloigné du cap de départ
+    static bool leftStartHeading = false;
+
     static async Task connect()
     {
         // Connexion MySQL
         string connectionString =
             "Server=localhost;Port=3306;Database=mydb;User Id=root;Password=Pa$$w0rd;";
 
-        //Enregistrement CSV
+        // Enregistrement CSV
         string basePath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "MA-Metier-Autopilote");
 
@@ -31,29 +42,31 @@ class Program
         Console.WriteLine("Connexion à Flight Simulator réussie");
 
         bool running = true;
-        Console.WriteLine("Appuie sur Q pour arrêter l’enregistrement");
+        Console.WriteLine("Q = quitter | C = cercle gauche");
 
         using var writer = new StreamWriter(csvPath);
         writer.WriteLine("Timestamp;Altitude_ft;Airspeed_kts;AccelX;AccelY;AccelZ");
 
-        bool bousoleInfo = true;
-        double bousole_start = 0;
+        bool boussoleInfo = true;
+        double boussole_start = 0;
 
         while (running)
         {
-            // Arrêt avec Q
+            // Gestion clavier
             if (Console.KeyAvailable)
             {
                 var key = Console.ReadKey(true);
+
                 if (key.Key == ConsoleKey.Q)
                     running = false;
+
+                if (key.Key == ConsoleKey.C)
+                    doCircle = true;
             }
 
-
-            // Récupération des données
+            // Données avion
             double altitude = await client.SimVars.GetAsync<double>("PLANE ALTITUDE", "feet");
             double airspeed = await client.SimVars.GetAsync<double>("AIRSPEED INDICATED", "knots");
-
             double magnetic_compas = await client.SimVars.GetAsync<double>("MAGNETIC COMPASS", "degrees");
             double roulis = await client.SimVars.GetAsync<double>("PLANE BANK DEGREES", "radians");
 
@@ -61,17 +74,18 @@ class Program
             double ay = await client.SimVars.GetAsync<double>("ACCELERATION BODY Y", "feet per second squared");
             double az = await client.SimVars.GetAsync<double>("ACCELERATION BODY Z", "feet per second squared");
 
-            if (bousoleInfo == true)
+            // Mémorisation du cap de départ (une seule fois)
+            if (boussoleInfo)
             {
-                bousole_start = magnetic_compas;
-                bousoleInfo = false;
+                boussole_start = magnetic_compas;
+                boussoleInfo = false;
             }
 
-            await analyse(client, altitude, airspeed, magnetic_compas, roulis, bousole_start);
+            // Analyse / pilotage
+            await analyse(client, altitude, airspeed, magnetic_compas, roulis, boussole_start);
 
+            // CSV
             DateTime timestamp = DateTime.Now;
-
-            // Écriture CSV (InvariantCulture = point comme séparateur décimal)
             writer.WriteLine(
                 $"{timestamp:HH:mm:ss.fff};" +
                 $"{altitude.ToString("F0", CultureInfo.InvariantCulture)};" +
@@ -82,7 +96,7 @@ class Program
             );
             writer.Flush();
 
-            // Insertion SQL
+            // SQL
             string query = @"
                 INSERT INTO Data
                 (`Timestamp`, `Altitude_ft`, `Airspeed_kts`, `AccelX_ft_s2`, `AccelY_ft_s2`, `AccelZ_ft_s2`)
@@ -96,7 +110,6 @@ class Program
                 cmd.Parameters.AddWithValue("@ax", ax);
                 cmd.Parameters.AddWithValue("@ay", ay);
                 cmd.Parameters.AddWithValue("@az", az);
-
                 cmd.ExecuteNonQuery();
             }
 
@@ -106,44 +119,96 @@ class Program
         Console.WriteLine("Enregistrement arrêté.");
     }
 
-    public static async Task analyse(SimConnectClient client, double alt, double vitesse, double boussole, double angleRoulis, double boussole_start)
-    {
-        await Task.Delay(100);
+    // Analyse / pilotage
 
+    public static async Task analyse(
+        SimConnectClient client,
+        double alt,
+        double vitesse,
+        double boussole,
+        double angleRoulis,
+        double boussole_start)
+    {
         Icommandes controls = new SimConnectControls(client);
 
-        //Gestion du roulis
-        Console.WriteLine(alt.ToString() + " " + vitesse.ToString() + " " + angleRoulis.ToString());
+        // Si on fait un cercle
+        if (doCircle)
+        {
+            await CircleLeft(controls, boussole);
+            return;
+        }
+
+        // Vol en ligne droite
 
         double angle_max = 0.01;
-        double angle_ailerons = 0.05;
-        if (angleRoulis > angle_max)
-        {
-            await controls.SetAileron(angle_ailerons);
-        }
-        if (angleRoulis < -angle_max)
-        {
-            await controls.SetAileron(-angle_ailerons);
-        }
-        if ((angleRoulis < angle_max) && (angleRoulis > -angle_max))
-        {
-            await controls.SetAileron(0);
-        }
+        double angle = 0.05;
 
-        //Gestion de la direction
-        Console.Write(boussole_start + " " + boussole + "\n");
+        if (angleRoulis > angle_max)
+            await controls.SetAileron(angle);
+
+        if (angleRoulis < -angle_max)
+            await controls.SetAileron(-angle);
+
+        if (Math.Abs(angleRoulis) <= angle_max)
+            await controls.SetAileron(0);
 
         if (boussole > boussole_start + 2)
-        {
-            await controls.SetRudder(-angle_ailerons);
-        }
+            await controls.SetRudder(-angle);
+
         if (boussole < boussole_start - 2)
-        {
-            await controls.SetRudder(angle_ailerons);
-        }
-        if ((boussole < boussole_start + 2) && (boussole > boussole_start - 2))
-        {
+            await controls.SetRudder(angle);
+
+        if (Math.Abs(boussole - boussole_start) <= 2)
             await controls.SetRudder(0);
+    }
+
+
+    // Cercle complet (gauche)
+
+    static async Task CircleLeft(Icommandes controls, double currentHeading)
+    {
+        double angle = 0.05;
+
+        // Initialisation du cercle
+        if (circleStartHeading == 0)
+        {
+            circleStartHeading = currentHeading;
+            leftStartHeading = false;
+            Console.WriteLine("Début cercle gauche");
         }
+
+        // Virage constant
+        await controls.SetAileron(-angle);
+        await controls.SetRudder(-angle);
+
+        double diff = NormalizeAngle(currentHeading - circleStartHeading);
+
+        // Si la valeur absolue est plus grande que 20°, on a quitté le cap de départ
+        if (Math.Abs(diff) > 20)
+            leftStartHeading = true;
+
+
+        // Si on a quitté le cap de départ et qu'on y est revenu, on arrête le cercle (on revient en vol en ligne droite)
+        if (leftStartHeading && Math.Abs(diff) < 2)
+        {
+            await controls.SetAileron(0);
+            await controls.SetRudder(0);
+
+            doCircle = false;
+            circleStartHeading = 0;
+
+            Console.WriteLine("Cercle gauche terminé");
+        }
+    }
+
+
+    // Outil angles
+
+    static double NormalizeAngle(double angle)
+    {
+        angle %= 360;
+        if (angle < -180) angle += 360;
+        if (angle > 180) angle -= 360;
+        return angle;
     }
 }
