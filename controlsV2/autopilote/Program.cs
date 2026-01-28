@@ -130,6 +130,6 @@ class Program
         }
 
         await Drive.vol_Plat(controls, angleRoulis);
-        await Drive.cap(controls, angleRoulis);
+        await Drive.cap(controls, boussole, boussole_start);
     }
 }

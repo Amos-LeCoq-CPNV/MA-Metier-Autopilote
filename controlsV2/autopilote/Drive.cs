@@ -21,19 +21,29 @@ namespace autopilote
                 await controls.SetAileron(0);
         }
         // Toujour tenir le cap
-        public static async Task cap(Icommandes controls, double angleRoulis)
+        public static async Task cap(Icommandes controls, double boussole, double boussole_start)
         {
-            double angle_max = 0.01;
             double angle = 0.05;
+            double boussole_erreur = NormalizeAngle(boussole - boussole_start);
+            double boussole_tolerance = 2;
 
-            if (angleRoulis > angle_max)
-                await controls.SetAileron(angle);
+            // trop à droite
+            if (boussole_erreur > boussole_tolerance)
+            {
+                await controls.SetRudder(-angle);
+            }
 
-            if (angleRoulis < -angle_max)
-                await controls.SetAileron(-angle);
+            // trop à gauche
+            if (boussole_erreur < -boussole_tolerance)
+            {
+                await controls.SetRudder(angle);
+            }
 
-            if (Math.Abs(angleRoulis) <= angle_max)
-                await controls.SetAileron(0);
+            // ok
+            if (Math.Abs(boussole_erreur) <= boussole_tolerance)
+            {
+                await controls.SetRudder(0);
+            }
         }
         // Faire un cercle 
         public static async Task<bool> CircleLeft(Icommandes controls, double boussole, double boussole_start)
