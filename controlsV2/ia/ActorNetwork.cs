@@ -1,53 +1,106 @@
-﻿using Tensorflow;
+﻿using System;
+using System.IO;
+using Tensorflow;
 using Tensorflow.Keras;
+using Tensorflow.Keras.ArgsDefinition;
 using Tensorflow.Keras.Engine;
 using Tensorflow.Keras.Layers;
+using Tensorflow.Keras.Losses;
+using Tensorflow.Keras.Optimizers;
 using Tensorflow.NumPy;
-using static Tensorflow.Binding;
+using static Tensorflow.KerasApi;
 
-public class ActorNetwork
+namespace ia
 {
-    private Model model;
-
-    public ActorNetwork()
+    public class ActorNetwork
     {
-        var inputs = keras.Input(shape: 4);
+        private Sequential model;
 
-        var x = new Dense(128, activation: "relu").Apply(inputs);
-        x = new Dense(128, activation: "relu").Apply(x);
+        private const string MODEL_DIR = "models";
+        private const string WEIGHTS_PATH = "models/actor.weights";
 
-        var outputs = new Dense(3, activation: "tanh").Apply(x);
+        public ActorNetwork(int stateSize = 5, int actionSize = 3)
+        {
+            model = keras.Sequential();
 
-        model = keras.Model(inputs, outputs);
-        model.compile(
-            optimizer: keras.optimizers.Adam(0.0001f),
-            loss: "mse"
-        );
-    }
+            model.add(new Dense(new DenseArgs
+            {
+                Units = 128,
+                Activation = keras.activations.Relu,
+                InputShape = new Shape(stateSize)
+            }));
 
-    public float[] Predict(float[] state)
-    {
-        var npState = np.array(new float[][] { state });
-        var pred = model.predict(npState);
-        return pred[0].ToArray<float>();
-    }
+            model.add(new Dense(new DenseArgs
+            {
+                Units = 128,
+                Activation = keras.activations.Relu
+            }));
 
-    public void Train(NDArray states, NDArray actions)
-    {
-        model.train_on_batch(states, actions);
-    }
+            model.add(new Dense(new DenseArgs
+            {
+                Units = actionSize,
+                Activation = keras.activations.Tanh
+            }));
 
-    public void TrainWithCritic(CriticNetwork critic, NDArray states)
-    {
-        using var tape = tf.GradientTape();
-        tape.watch(model.trainable_variables);
+            model.compile(
+                optimizer: new Adam(learning_rate: 0.0001f),
+                loss: new MeanSquaredError()
+            );
 
-        var actions = model.Apply(states);
-        var qValues = critic.model.Apply(new Tensors(states, actions));
-        var loss = -tf.reduce_mean(qValues);
+            Load();
+        }
 
-        var grads = tape.gradient(loss, model.trainable_variables);
-        keras.optimizers.Adam(0.0001f)
-            .apply_gradients(zip(grads, model.trainable_variables));
+        // =====================
+        // PRÉDICTION (SAFE)
+        // =====================
+        public float[] Predict(float[] state)
+        {
+            float[,] input = new float[1, state.Length];
+            for (int i = 0; i < state.Length; i++)
+                input[0, i] = state[i];
+
+            NDArray npState = np.array(input);
+
+            // 🔴 predict retourne Tensors
+            var tensors = model.predict(npState);
+
+            // ✅ On récupère le premier tensor
+            NDArray pred = tensors[0].numpy();
+
+            float[] action = new float[pred.shape[1]];
+            for (int i = 0; i < action.Length; i++)
+                action[i] = (float)pred[0, i];
+
+            return action;
+        }
+
+
+
+        public void Train(NDArray states, NDArray actions)
+        {
+            model.fit(states, actions, batch_size: (int)states.shape[0], epochs: 1);
+        }
+
+        // =====================
+        // SAUVEGARDE / CHARGEMENT
+        // =====================
+        public void Save()
+        {
+            Directory.CreateDirectory(MODEL_DIR);
+            model.save_weights(WEIGHTS_PATH);
+        }
+
+        private void Load()
+        {
+            if (File.Exists(WEIGHTS_PATH))
+            {
+                model.load_weights(WEIGHTS_PATH);
+                Console.WriteLine("✔ Modèle chargé");
+            }
+            else
+            {
+                Console.WriteLine("ℹ Aucun modèle existant, démarrage à zéro");
+            }
+        }
     }
 }

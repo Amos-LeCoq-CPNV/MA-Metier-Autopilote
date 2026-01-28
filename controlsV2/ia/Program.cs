@@ -1,17 +1,14 @@
-﻿using System;
+﻿using ia;
+using System;
+using System.Threading.Tasks;
 
-namespace ia
+internal class Program
 {
-    internal class Program
+    static async Task Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Démarrage de l'entraînement RL du planeur...");
-
-            Trainer.Run();
-
-            Console.WriteLine("Entraînement terminé.");
-            Console.ReadLine();
-        }
+        Console.WriteLine("Démarrage de l'entraînement RL du planeur...");
+        await Trainer.Run();
+        Console.WriteLine("Entraînement terminé.");
+        Console.ReadLine();
     }
 }
