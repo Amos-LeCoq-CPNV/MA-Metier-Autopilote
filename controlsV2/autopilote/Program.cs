@@ -122,7 +122,7 @@ class Program
     {
         Icommandes controls = new SimConnectControls(client);
 
-        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + vario + "\n");
+        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + " " + vario + "\n");
 
         // Si on fait un cercle
         if (doCircle)
