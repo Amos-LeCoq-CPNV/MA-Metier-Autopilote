@@ -134,7 +134,7 @@ class Program
 
         if (await Drive.thermique(controls, vario) == true)
         {
-            Console.Write("oui thermique");
+            Console.Write("\n oui thermique \n");
         }
         await Drive.vol_Plat(controls, angleRoulis);
         await Drive.cap(controls, boussole, boussole_start);
