@@ -1,4 +1,5 @@
 ﻿using commandes.Interfaces;
+using System.Drawing;
 
 namespace autopilote
 {
@@ -88,6 +89,24 @@ namespace autopilote
                 return true;
             }
             return false;
+        }
+
+        public static async Task tourner(Icommandes controls, double angleRoulis, double angleFinal = 40)
+        {
+            double Kp = 0.005; // sensibilité (proportionnel)
+
+            while (Math.Abs(angleRoulis - angleFinal) > 1) // tolérance 1°
+            {
+                double erreur = angleFinal - angleRoulis;
+                double aileronCmd = Math.Clamp(erreur * Kp, -0.1, 0.1);
+
+                await controls.SetAileron(aileronCmd);
+
+                await Task.Delay(50); // laisse le temps au roulis de changer
+            }
+
+            // stabilise une fois terminé
+            await controls.SetAileron(0);
         }
     }
 }

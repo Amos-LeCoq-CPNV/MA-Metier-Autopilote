@@ -135,6 +135,11 @@ class Program
         if (await Drive.thermique(controls, vario) == true)
         {
             Console.Write("\n oui thermique \n");
+            while(await Drive.thermique(controls, vario) == true)
+            {
+                Drive.tourner(controls,angleRoulis);
+            }
+            return ;
         }
         await Drive.vol_Plat(controls, angleRoulis);
         await Drive.cap(controls, boussole, boussole_start);
