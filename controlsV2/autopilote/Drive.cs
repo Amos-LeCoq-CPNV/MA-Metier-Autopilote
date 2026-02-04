@@ -53,7 +53,7 @@ namespace autopilote
             // Virage constant
             await controls.SetAileron(-angle);
             await controls.SetRudder(-angle);
-            
+
             await controls.SetElevator(0.02);
 
             double diff = NormalizeAngle(boussole - boussole_start);
@@ -79,6 +79,15 @@ namespace autopilote
             if (angle < -180) angle += 360;
             if (angle > 180) angle -= 360;
             return angle;
+        }
+
+        public static async Task<bool> thermique(Icommandes controls, double vario)
+        {
+            if (vario >= 6)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
