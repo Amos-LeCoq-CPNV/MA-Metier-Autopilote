@@ -2,6 +2,7 @@
 using commandes;
 using commandes.Interfaces;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Crypto.Utilities;
 using SimConnect.NET;
 using System.Globalization;
 
@@ -131,6 +132,10 @@ class Program
             return;
         }
 
+        if (await Drive.thermique(controls, vario) == true)
+        {
+            Console.Write("oui thermique");
+        }
         await Drive.vol_Plat(controls, angleRoulis);
         await Drive.cap(controls, boussole, boussole_start);
     }
