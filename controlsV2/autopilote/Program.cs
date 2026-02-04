@@ -66,6 +66,8 @@ class Program
             double magnetic_compas = await client.SimVars.GetAsync<double>("MAGNETIC COMPASS", "degrees");
             double roulis = await client.SimVars.GetAsync<double>("PLANE BANK DEGREES", "radians");
 
+            double vario = await client.SimVars.GetAsync<double>("VARIOMETER NETTO", "feet per second");
+
             double ax = await client.SimVars.GetAsync<double>("ACCELERATION BODY X", "feet per second squared");
             double ay = await client.SimVars.GetAsync<double>("ACCELERATION BODY Y", "feet per second squared");
             double az = await client.SimVars.GetAsync<double>("ACCELERATION BODY Z", "feet per second squared");
@@ -78,7 +80,7 @@ class Program
             }
 
             // Analyse / pilotage
-            await analyse(client, altitude, airspeed, magnetic_compas, roulis, boussole_start);
+            await analyse(client, altitude, airspeed, magnetic_compas, roulis, boussole_start, vario);
 
             // CSV
             DateTime timestamp = DateTime.Now;
@@ -116,11 +118,11 @@ class Program
     }
 
     // Analyse / pilotage
-    public static async Task analyse(SimConnectClient client,double alt,double vitesse,double boussole,double angleRoulis,double boussole_start)
+    public static async Task analyse(SimConnectClient client,double alt,double vitesse,double boussole,double angleRoulis,double boussole_start, double vario)
     {
         Icommandes controls = new SimConnectControls(client);
 
-        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + "\n");
+        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + vario + "\n");
 
         // Si on fait un cercle
         if (doCircle)
