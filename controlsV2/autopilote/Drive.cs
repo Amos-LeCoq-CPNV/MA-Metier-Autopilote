@@ -93,20 +93,19 @@ namespace autopilote
 
         public static async Task tourner(Icommandes controls, double angleRoulis, double angleFinal = 40)
         {
-            double Kp = 0.005; // sensibilité (proportionnel)
-
-            while (Math.Abs(angleRoulis - angleFinal) > 1) // tolérance 1°
+            double aileron = 0.05;
+            if (angleRoulis>angleFinal+2)
             {
-                double erreur = angleFinal - angleRoulis;
-                double aileronCmd = Math.Clamp(erreur * Kp, -0.1, 0.1);
-
-                await controls.SetAileron(aileronCmd);
-
-                await Task.Delay(50); // laisse le temps au roulis de changer
+                await controls.SetAileron(aileron);
             }
-
-            // stabilise une fois terminé
-            await controls.SetAileron(0);
+            if (angleRoulis < angleFinal - 2)
+            {
+                await controls.SetAileron(-aileron);
+            }
+            if ((angleRoulis<angleFinal+2)&&(angleRoulis>angleFinal-2))
+            {
+                await controls.SetAileron(0);
+            }
         }
     }
 }
