@@ -84,27 +84,30 @@ namespace autopilote
 
         public static async Task<bool> thermique(Icommandes controls, double vario)
         {
-            if (vario >= 6)
+            if (vario >= 4)
             {
                 return true;
             }
             return false;
         }
 
-        public static async Task tourner(Icommandes controls, double angleRoulis, double angleFinal = 40)
+        public static async Task tourner(Icommandes controls, double angleRoulis, double angleFinal = 0.7)
         {
-            double aileron = 0.05;
-            if (angleRoulis>angleFinal+2)
+
+            double aileron = 0.5;
+            await controls.SetElevator(0.05);
+            if (angleRoulis>angleFinal + 0.05)
             {
                 await controls.SetAileron(aileron);
             }
-            if (angleRoulis < angleFinal - 2)
+            if (angleRoulis < angleFinal - 0.05)
             {
                 await controls.SetAileron(-aileron);
             }
-            if ((angleRoulis<angleFinal+2)&&(angleRoulis>angleFinal-2))
+            if ((angleRoulis<angleFinal+0.05)&&(angleRoulis>angleFinal-0.05))
             {
                 await controls.SetAileron(0);
+                await controls.SetElevator(0);
             }
         }
     }

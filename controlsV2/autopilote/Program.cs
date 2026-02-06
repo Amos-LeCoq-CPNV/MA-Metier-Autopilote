@@ -123,7 +123,7 @@ class Program
     {
         Icommandes controls = new SimConnectControls(client);
 
-        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + " " + vario + "\n");
+        Console.Write(boussole_start + " " + boussole + " " + angleRoulis + " " + vario + " " + angleRoulis +"\n");
 
         // Si on fait un cercle
         if (doCircle)
@@ -135,10 +135,8 @@ class Program
         if (await Drive.thermique(controls, vario) == true)
         {
             Console.Write("\n oui thermique \n");
-            while(await Drive.thermique(controls, vario) == true)
-            {
-                Drive.tourner(controls,angleRoulis);
-            }
+            Drive.tourner(controls,angleRoulis);
+            
             return ;
         }
         await Drive.vol_Plat(controls, angleRoulis);
